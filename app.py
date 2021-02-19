@@ -5,7 +5,6 @@ from flask import Flask, jsonify, request, Response
 from flask_pymongo import PyMongo
 
 
-
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
