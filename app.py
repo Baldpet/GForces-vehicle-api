@@ -35,6 +35,34 @@ def create():
         return Response(status=500)
 
 
+@app.route('/api/update/<order_number>', methods=['POST'])
+def update(order_number):
+    try:
+        if 'vehicle_manufacturer' in request.args:
+            vehicle_manufacturer = request.args['vehicle_manufacturer']
+        else:
+            vehicle_manufacturer = None
+        if 'model' in request.args:
+            model = request.args['model']
+        else:
+            model = None
+        if 'total_price' in request.args:
+            total_price = request.args['total_price']
+        else:
+            total_price = None
+
+        order = mongo.db.orders
+
+        order.update_one({'order_number': order_number},
+                        {'$set': {'vehicle_manufacturer': vehicle_manufacturer,
+                                'model': model,
+                                'total_price': total_price
+                                }
+                        })
+
+        return Response(status=200)
+    except:
+        return Response(status=500)
 
 
 
