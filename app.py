@@ -65,6 +65,24 @@ def update(order_number):
         return Response(status=500)
 
 
+@app.route('/api/view/<order_number>', methods=['GET'])
+def view(order_number):
+    try:
+        order = mongo.db.orders
+
+        order_info = order.find_one({'order_number': order_number}, {
+            '_id': False,
+            'order_number': True,
+            'model': True,
+            'vehicle_manufacturer': True,
+            'total_price': True
+        })
+
+        return order_info
+    except:
+        return Response(status=500)
+
+
 
 
 if __name__ == '__main__':
