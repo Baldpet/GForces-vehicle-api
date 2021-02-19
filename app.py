@@ -15,6 +15,24 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 
 
+@app.route('/api/create', methods=['POST'])
+def create():
+    try:
+        order = mongo.db.orders
+        order_date = datetime.datetime.now()
+        order_number = uuid.uuid4().hex
+        order.insert_one({
+            'order_number': order_number,
+            'order_date': order_date,
+        })
+
+        context = {
+            'order_number': order_number
+        }
+
+        return context
+    except:
+        return Response(status=500)
 
 
 
