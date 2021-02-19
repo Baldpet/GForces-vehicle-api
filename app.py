@@ -1,17 +1,40 @@
 import os
 import uuid
-import datetime
+from datetime import datetime, timedelta
 from flask import Flask, jsonify, request, Response
 from flask_pymongo import PyMongo
+from flask_apscheduler import APScheduler
+from bson.objectid import ObjectId
+
+
+class config(object):
+    SCHEDULER_API_ENABLED = True
 
 
 app = Flask(__name__)
+app.config.from_object(config())
 app.secret_key = os.urandom(24)
 
 app.config["MONGO_DBNAME"] = 'GForces'
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 
 mongo = PyMongo(app)
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+
+@scheduler.task('cron', id='do_job', hour='1')
+def job():
+    order = mongo.db.orders
+    orders = order.find({})
+    for item in orders:
+        date = item.get('order_date')
+        three_days = datetime.now() - timedelta(days=3)
+        if date < three_days:
+            order_id = ObjectId(item.get('_id'))
+            order.delete_one({'_id': order_id})
 
 
 @app.route('/api/create', methods=['POST'])
@@ -103,4 +126,4 @@ def view_all():
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
-            port=int(os.environ.get('PORT')), debug=False)
+            port=int(os.environ.get('PORT')), debug=True)
