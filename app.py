@@ -83,6 +83,23 @@ def view(order_number):
         return Response(status=500)
 
 
+@app.route('/api/view_all', methods=['GET'])
+def view_all():
+    order = mongo.db.orders
+
+    all_orders_cur = order.find({}, {
+        '_id': False,
+        'order_number': True,
+        'model': True,
+        'vehicle_manufacturer': True,
+        'total_price': True
+    })
+
+    all_orders = []
+    for order in all_orders_cur:
+        all_orders.append(order)
+
+    return jsonify(all_orders)
 
 
 if __name__ == '__main__':
