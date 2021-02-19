@@ -12,7 +12,7 @@ On Fail Returns: `HttpResponse (status=500)`
 
 Request the API to update an order in the database with vehicle manufacturer, model and total price.
 
-URL: `<host site url>/api/update/<order number>/?<parameters>`  
+URL: `<host site url>/api/update/<order number>?<parameters>`  
 Parameters: All Optional, if none given no amendment will take place.
 * `vehicle_manufacturer=<manufacturer value>`
 * `model=<model value>`
